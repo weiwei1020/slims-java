@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.lims.mapper.ProjectMapper">
+    <resultMap id="Project" type="com.example.demo.lims.vo.Project">
+        <id property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectCtime" column="project_ctime"/>
+        <result property="projectRemark" column="project_remark"/>
+        <result property="projectPersonId" column="project_person_id"/>
+        <result property="projectPerson" column="project_person"/>
+    </resultMap>
+
+
+    <insert id="insertProject" parameterType="project">
+        insert  into project (project_name,project_ctime,project_remark,project_person_id,project_person)
+        values (#{projectName},#{projectCtime},#{projectRemark},#{projectPersonId},#{projectPerson})
+    </insert>
+
+    <delete id="deleteProject" parameterType="project">
+          DELETE project,test
+          FROM project
+          LEFT JOIN test
+          ON project.project_id=test.test_project_id
+          WHERE project_id=#{projectId}
+    </delete>
+
+    <update id="updateProject" parameterType="project" >
+        UPDATE project
+        SET
+        project_name  = #{projectName},
+        project_ctime  = #{projectCtime},
+        project_remark  = #{projectRemark},
+        project_person_id  = #{projectPersonId},
+        project_person  = #{projectPerson}
+        WHERE project_id = #{projectId}
+    </update>
+
+    <select id="selectProject" resultMap="Project">
+        select * from project
+        where project_id = #{projectId}
+    </select>
+
+    <select id="selectAllProject" resultMap="Project">
+        select * from project
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(*) from project
+    </select>
+
+    <select id="pageProject" parameterType="Map" resultMap="Project">
+        select *
+        from project
+        where project_name LIKE concat('%',#{projectName},'%')
+        AND project_person LIKE concat('%',#{projectPerson},'%')
+            limit #{start},#{size}
+    </select>
+
+</mapper>
