@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.lims.mapper.ApparatusSortMapper">
+    <resultMap id="ApparatusSort" type="com.example.demo.lims.vo.ApparatusSort">
+        <id property="apparatusSortId" column="apparatus_sort_id"/>
+        <result property="apparatusSortName" column="apparatus_sort_name"/>
+        <result property="apparatusSortNumber" column="apparatus_sort_number"/>
+        <result property="apparatusSortRemark" column="apparatus_sort_remark"/>
+    </resultMap>
+
+
+    <insert id="insertApparatusSort" parameterType="apparatusSort">
+        insert  into apparatus_sort (apparatus_sort_name,apparatus_sort_number,apparatus_sort_remark)
+        values (#{apparatusSortName},#{apparatusSortNumber},#{apparatusSortRemark})
+    </insert>
+
+    <delete id="deleteApparatusSort" parameterType="apparatusSort">
+        delete from apparatus_sort
+        where apparatus_sort_id = #{apparatusSortId}
+    </delete>
+
+    <update id="updateApparatusSort" parameterType="apparatusSort" >
+        UPDATE apparatus_sort
+        SET
+        apparatus_sort_name  = #{apparatusSortName},
+        apparatus_sort_remark  = #{apparatusSortRemark},
+        WHERE apparatus_sort_id = #{apparatusSortId}
+    </update>
+
+    <select id="selectApparatusSort" resultMap="ApparatusSort">
+        select * from apparatus_sort
+        where apparatus_sort_id = #{apparatusSortId}
+    </select>
+
+    <select id="selectAllApparatusSort" resultMap="ApparatusSort">
+        select * from apparatus_sort
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(*) from apparatus_sort
+    </select>
+
+    <select id="pageApparatusSort" parameterType="Map" resultMap="ApparatusSort">
+        select *
+        from apparatus_sort
+        where apparatus_sort_name LIKE concat('%',#{apparatusSortName},'%')
+            limit #{start},#{size}
+    </select>
+
+</mapper>

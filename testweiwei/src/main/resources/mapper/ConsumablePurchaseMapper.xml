@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.lims.mapper.ConsumablePurchaseMapper">
+    <resultMap id="ConsumablePurchase" type="com.example.demo.lims.vo.ConsumablePurchase">
+        <id property="purchaseId" column="purchase_id"/>
+        <result property="purchaseConsumableId" column="purchase_consumable_id"/>
+        <result property="consunmableStock" column="consumable_stock"/>
+        <result property="price" column="price"/>
+        <result property="status" column="status"/>
+        <result property="purchaseRemark" column="purchase_remark"/>
+        <result property="ctime" column="ctime"/>
+        <result property="ltime" column="ltime"/>
+        <result property="reason" column="reason"/>
+        <result property="id" column="id"/>
+        <result property="num" column="num"/>
+        <result property="name" column="name"/>
+        <result property="consumableId" column="consumable_id"/>
+        <result property="consumable" column="consumable"/>
+        <result property="storehouse" column="storehouse"/>
+        <result property="stock" column="stock"/>
+        <result property="unit" column="unit"/>
+        <result property="remark" column="remark"/>
+        <result property="purchaseNumber" column="purchase_number"/>
+        <result property="purchasePerson" column="purchase_person"/>
+        <result property="purchaseType" column="purchase_type"/>
+    </resultMap>
+
+
+    <insert id="insertConsumablePurchase" parameterType="ConsumablePurchase">
+        insert  into consumable_purchase (purchase_consumable_id,consumable_stock,price,status,purchase_remark,ctime,ltime,reason,purchase_number,purchase_person,purchase_type)
+        values (#{purchaseConsumableId},#{consunmableStock},#{price},0,#{purchaseRemark},#{ctime},#{ltime},#{reason},#{purchaseNumber},#{purchasePerson},#{purchaseType})
+    </insert>
+
+    <delete id="deleteConsumablePurchase" parameterType="ConsumablePurchase">
+        delete from consumable_purchase
+        where purchase_id= #{purchaseId}
+        AND status=0
+    </delete>
+
+    <update id="updateConsumablePurchase" parameterType="ConsumablePurchase" >
+        UPDATE consumable_purchase
+        SET
+        purchase_consumable_id  = #{purchaseConsumableId},
+        consumable_stock  = #{consunmableStock},
+        price  = #{price},
+        purchase_remark  = #{purchaseRemark},
+        ctime  = #{ctime},
+        reason = #{reason},
+        purchase_person  = #{purchasePerson}
+        WHERE purchase_id= #{purchaseId}
+        AND status=0
+    </update>
+
+    <select id="selectConsumablePurchase" resultMap="ConsumablePurchase">
+        select * from consumable_purchase,consumable
+        where consumable_purchase.purchase_consumable_id = consumable.id
+        AND purchase_id= #{purchaseId}
+    </select>
+
+    <select id="selectAllConsumablePurchase" parameterType="int" resultMap="ConsumablePurchase">
+        select * from consumable_purchase,consumable
+        where consumable_purchase.purchase_consumable_id = consumable.id
+        AND purchase_type = #{purchaseType}
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(*) from consumable_purchase
+    </select>
+
+    <select id="pageConsumablePurchase" parameterType="Map" resultMap="ConsumablePurchase">
+        select *
+        from consumable_purchase,consumable
+        where consumable.num LIKE concat('%',#{num},'%')
+        and consumable.name LIKE concat('%',#{name},'%')
+        and consumable_purchase.reason LIKE concat('%',#{reason},'%')
+        and consumable_purchase.purchase_person LIKE concat('%',#{purchasePerson},'%')
+        and consumable_purchase.purchase_consumable_id = consumable.id
+        AND purchase_type = #{purchaseType}
+            limit #{start},#{size}
+    </select>
+
+
+    <!--采购单审批-->
+    <update id="purchaseAudit" parameterType="ConsumablePurchase" >
+        UPDATE consumable_purchase
+        SET
+        ltime  = #{ltime},
+        purchase_remark = #{purchaseRemark},
+        status = 1
+        WHERE purchase_id= #{purchaseId}
+        and status = 0
+
+    </update>
+    <!--采购单驳回-->
+    <update id="purchaseReject" parameterType="ConsumablePurchase" >
+         UPDATE consumable_purchase
+        SET
+        ltime  = #{ltime},
+        purchase_remark = #{purchaseRemark},
+        status = 2
+        WHERE purchase_id= #{purchaseId}
+        and status = 0
+    </update>
+    <!--采购单出库-->
+    <update id="purchaseOut" parameterType="ConsumablePurchase" >
+        UPDATE consumable_purchase
+        SET
+        ltime  = #{ltime},
+        purchase_remark = #{purchaseRemark},
+        status = 3
+        WHERE purchase_id= #{purchaseId}
+        and status = 1
+    </update>
+</mapper>
