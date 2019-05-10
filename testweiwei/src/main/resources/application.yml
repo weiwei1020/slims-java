@@ -1,4 +1,5 @@
 server:
+#端口号8080
   port: 8080
 spring:
   datasource:
@@ -8,11 +9,13 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 
-
+#扫描vo类和mapper.xml文件
 mybatis:
   type-aliases-package: com.example.demo.lims.vo
   mapper-locations: mapper/*.xml
 
+
+#生成日志
 logging:
   level:
     com.example.demo.lims.mapper: debug

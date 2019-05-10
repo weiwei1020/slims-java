@@ -20,7 +20,7 @@ public class TestController {
 
     @RequestMapping(value = "/add")
     public PageReturn addTest(Test test){
-        test.setTestName("将");
+        test.setTestName("bv");
         return testService.addTest(test);
     }
 
@@ -47,7 +47,7 @@ public class TestController {
     @RequestMapping("/page")
     public Pagelims pageTest(Test test, Integer page, Integer rows ){
         if (page == null){
-            page=2;
+            page=1;
         }
         if (rows==null){
             rows=20;
