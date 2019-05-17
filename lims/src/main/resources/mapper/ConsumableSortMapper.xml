@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.lims.mapper.ConsumableSortMapper">
+    <resultMap id="ConsumableSort" type="com.example.demo.lims.vo.ConsumableSort">
+        <id property="consumableSortId" column="comsumable_sort_id"/>
+        <result property="consumableSortName" column="consumable_sort_name"/>
+        <result property="consumableSortNumber" column="consumable_sort_number"/>
+        <result property="consumableSortRemark" column="consumable_sort_remark"/>
+    </resultMap>
+
+
+    <insert id="insertConsumableSort" parameterType="ConsumableSort">
+        insert  into consumable_sort (consumable_sort_name,consumable_sort_number,consumable_sort_remark)
+        values (#{consumableSortName},#{consumableSortNumber},#{consumableSortRemark})
+    </insert>
+
+    <delete id="deleteConsumableSort" parameterType="ConsumableSort">
+        delete from consumable_sort
+        where comsumable_sort_id = #{consumableSortId}
+    </delete>
+
+    <update id="updateConsumableSort" parameterType="ConsumableSort" >
+        UPDATE consumable_sort
+        SET
+        consumable_sort_name  = #{consumableSortName},
+        consumable_sort_remark  = #{consumableSortRemark}
+        WHERE comsumable_sort_id = #{consumableSortId}
+    </update>
+
+    <select id="selectConsumableSort" resultMap="ConsumableSort">
+        select * from consumable_sort
+        where comsumable_sort_id = #{consumableSortId}
+    </select>
+
+    <select id="selectAllConsumableSort" resultMap="ConsumableSort">
+        select * from consumable_sort
+        where consumable_sort_name LIKE concat('%',#{consumableSortName},'%')
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(*) from consumable_sort
+    </select>
+
+    <select id="pageConsumableSort" parameterType="Map" resultMap="ConsumableSort">
+        select *
+        from consumable_sort
+        where consumable_sort_name LIKE concat('%',#{consumableSortName},'%')
+            limit #{start},#{size}
+    </select>
+
+</mapper>

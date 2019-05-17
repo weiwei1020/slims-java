@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.lims.mapper.ApparatusPurchaseMapper">
+    <resultMap id="ApparatusPurchase" type="com.example.demo.lims.vo.ApparatusPurchase">
+        <id property="id" column="id"/>
+        <result property="apparatusPurchaseApparatusId" column="apparatus_purchase_apparatus_id"/>
+        <result property="apparatusPurchasePersonId" column="apparatus_purchase_person_id"/>
+        <result property="apparatusPurchasePerson" column="apparatus_purchase_person"/>
+        <result property="apparatusPurchaseAuditPersonId" column="apparatus_purchase_audit_person_id"/>
+        <result property="apparatusPurchaseAuditPerson" column="apparatus_purchase_audit_person"/>
+        <result property="apparatusPurchaseReason" column="apparatus_purchase_reason"/>
+        <result property="apparatusPurchaseCtime" column="apparatus_purchase_ctime"/>
+        <result property="apparatusPurchaseLtime" column="apparatus_purchase_ltime"/>
+        <result property="apparatusPurchaseRemark" column="apparatus_purchase_remark"/>
+        <result property="apparatusPurchaseStatus" column="apparatus_purchase_status"/>
+        <result property="apparatusPurchaseType" column="apparatus_purchase_type"/>
+
+        <result property="apparatusId" column="apparatus_id"/>
+        <result property="apparatusNum" column="apparatus_num"/>
+        <result property="apparatusSortId" column="apparatus_sort_id"/>
+        <result property="apparatusSortName" column="apparatus_sort_name"/>
+        <result property="apparatusBrand" column="apparatus_brand"/>
+        <result property="apparatusPrice" column="apparatus_price"/>
+        <result property="apparatusBuyTime" column="apparatus_buy_time"/>
+        <result property="apparatusRemark" column="apparatus_remark"/>
+        <result property="apparatusName" column="apparatus_name"/>
+    </resultMap>
+
+
+    <insert id="insertApparatusPurchase" parameterType="ApparatusPurchase">
+        insert  into apparatus_purchase (apparatus_purchase_apparatus_id,apparatus_purchase_person_id,apparatus_purchase_person,apparatus_purchase_audit_person_id,apparatus_purchase_audit_person,apparatus_purchase_reason,apparatus_purchase_ctime,apparatus_purchase_ltime,apparatus_purchase_remark,apparatus_purchase_status,apparatus_purchase_type)
+        values (#{apparatusPurchaseApparatusId},#{apparatusPurchasePersonId},#{apparatusPurchasePerson},#{apparatusPurchaseAuditPersonId},#{apparatusPurchaseAuditPerson},#{apparatusPurchaseReason},#{apparatusPurchaseCtime},#{apparatusPurchaseLtime},#{apparatusPurchaseRemark},0,0)
+    </insert>
+
+    <delete id="deleteApparatusPurchase" parameterType="ApparatusPurchase">
+        delete from apparatus_purchase
+        where id= #{id}
+        AND apparatus_purchase_status=0
+    </delete>
+
+    <update id="updateApparatusPurchase" parameterType="ApparatusPurchase" >
+        UPDATE apparatus_purchase
+        SET
+        apparatus_purchase_apparatus_id  = #{apparatusPurchaseApparatusId},
+        apparatus_purchase_person_id  = #{apparatusPurchasePersonId},
+        apparatus_purchase_person  = #{apparatusPurchasePerson},
+        apparatus_purchase_audit_person_id  = #{apparatusPurchaseAuditPersonId},
+        apparatus_purchase_audit_person  = #{apparatusPurchaseAuditPerson},
+        apparatus_purchase_reason = #{apparatusPurchaseReason},
+        apparatus_purchase_ctime  = #{apparatusPurchaseCtime},
+        apparatus_purchase_ltime  = #{apparatusPurchaseLtime},
+        apparatus_purchase_remark  = #{apparatusPurchaseRemark}
+        WHERE id= #{id}
+        AND apparatus_purchase_status=0
+    </update>
+
+    <select id="selectApparatusPurchase" resultMap="ApparatusPurchase">
+        select * from apparatus_purchase,apparatus
+        where apparatus_purchase.apparatus_purchase_apparatus_id = apparatus.apparatus_id
+        AND id= #{id}
+    </select>
+
+    <select id="selectAllApparatusPurchase" parameterType="int" resultMap="ApparatusPurchase">
+        select * from apparatus_purchase,apparatus
+        where apparatus_purchase.apparatus_purchase_apparatus_id = apparatus.apparatus_id
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(*) from apparatus_purchase
+    </select>
+<!--草稿-->
+    <select id="pageDraftApparatusPurchase" parameterType="Map" resultMap="ApparatusPurchase">
+        select *
+        from apparatus_purchase,apparatus
+        where apparatus.apparatus_name LIKE concat('%',#{apparatusName},'%')
+        and apparatus.apparatus_id = apparatus_purchase.apparatus_purchase_apparatus_id
+        and apparatus_purchase.apparatus_purchase_type = 0
+        and apparatus_purchase.apparatus_purchase_status = 0
+        and apparatus_purchase.apparatus_purchase_person_id = #{apparatusPurchasePersonId}
+            limit #{start},#{size}
+    </select>
+<!--个人的预约-->
+    <select id="pageApparatusPurchase" parameterType="Map" resultMap="ApparatusPurchase">
+        select *
+        from apparatus_purchase,apparatus
+        where apparatus.apparatus_name LIKE concat('%',#{apparatusName},'%')
+        and apparatus.apparatus_id = apparatus_purchase.apparatus_purchase_apparatus_id
+        and apparatus_purchase.apparatus_purchase_type = 0
+        and apparatus_purchase.apparatus_purchase_status != 0
+        and apparatus_purchase.apparatus_purchase_person_id = #{apparatusPurchasePersonId}
+            limit #{start},#{size}
+    </select>
+   <!-- 查询all预约-->
+    <select id="apparatusPurchaseManage" parameterType="Map" resultMap="ApparatusPurchase">
+        select *
+        from apparatus_purchase,apparatus
+        where apparatus.apparatus_name LIKE concat('%',#{apparatusName},'%')
+        and apparatus.apparatus_id = apparatus_purchase.apparatus_purchase_apparatus_id
+        and apparatus_purchase.apparatus_purchase_type = 0
+        and apparatus_purchase.apparatus_purchase_status != 0
+            limit #{start},#{size}
+    </select>
+
+    <!--预约单审批-->
+    <update id="purchaseAudit" parameterType="ApparatusPurchase" >
+        UPDATE apparatus_purchase
+        SET
+        apparatus_purchase_status = 2
+        WHERE id= #{id}
+        and apparatus_purchase_status = 1
+
+    </update>
+
+    <!--预约单驳回-->
+    <update id="purchaseReject" parameterType="ApparatusPurchase" >
+         UPDATE apparatus_purchase
+        SET
+        apparatus_purchase_status = 3
+        WHERE id= #{id}
+        and apparatus_purchase_status = 1
+    </update>
+    <!--预约单提交-->
+    <update id="purchaseSubmit" parameterType="ApparatusPurchase" >
+        UPDATE apparatus_purchase
+        SET
+        apparatus_purchase_status = 1
+        WHERE id= #{id}
+        and apparatus_purchase_status = 0
+    </update>
+</mapper>

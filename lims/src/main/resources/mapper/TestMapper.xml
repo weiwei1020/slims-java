@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.lims.mapper.TestMapper">
+    <resultMap id="Test" type="com.example.demo.lims.vo.Test">
+        <id property="testId" column="test_id"/>
+        <result property="testName" column="test_name"/>
+        <result property="testUname" column="test_uname"/>
+        <result property="testRemark" column="test_remark"/>
+        <result property="testBeginDate" column="test_begin_date"/>
+        <result property="testEndDate" column="test_end_date"/>
+        <result property="testState" column="test_state"/>
+        <result property="testProjectId" column="test_project_id"/>
+        <result property="testProjectName" column="test_project_name"/>
+        <result property="beginDate" column="begin_date"/>
+        <result property="endDate" column="end_date"/>
+    </resultMap>
+
+
+    <insert id="insertTest" parameterType="test">
+        insert  into test (test_name,test_uname,test_remark,test_begin_date,test_end_date,test_state,test_project_id,test_project_name)
+        values (#{testName},#{testUname},#{testRemark},#{testBeginDate},#{testEndDate},#{testState},#{testProjectId},#{testProjectName})
+    </insert>
+
+    <delete id="deleteTest" parameterType="test">
+        delete from test
+        where test_id= #{testId}
+    </delete>
+
+    <update id="updateTest" parameterType="test" >
+        UPDATE test
+        SET
+        test_name  = #{testName},
+        test_uname  = #{testUname},
+        test_remark  = #{testRemark},
+        test_begin_date  = #{testBeginDate},
+        test_end_date  = #{testEndDate},
+        test_state  = #{testState},
+        test_project_id  = #{testProjectId},
+        test_project_name  = #{testProjectName}
+        WHERE test_id=#{testId}
+        AND test_state=0
+    </update>
+
+    <select id="selectTest" resultMap="Test">
+        select * from test
+        where test_id= #{testId}
+    </select>
+
+    <select id="selectAllTest" resultMap="Test">
+        select * from test
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(*) from test
+    </select>
+
+    <select id="pageTest" parameterType="Map" resultMap="Test">
+        select *
+        from test
+        where test_name LIKE concat('%',#{testName},'%')
+        and test_project_id LIKE concat(#{testProjectId})
+        and test_uname = #{testUname}
+            limit #{start},#{size}
+    </select>
+
+    <update id="beginTest" parameterType="test" >
+        UPDATE test
+        SET
+        test_state  = 1,
+        begin_date  = #{beginDate}
+        WHERE test_id=#{testId}
+    </update>
+
+    <update id="pauseTest" parameterType="test" >
+        UPDATE test
+        SET
+        test_state  = 2
+        WHERE test_id=#{testId}
+    </update>
+
+    <update id="terminationTest" parameterType="test" >
+        UPDATE test
+        SET
+        test_state  = 3
+        WHERE test_id=#{testId}
+    </update>
+
+    <update id="endTest" parameterType="test" >
+        UPDATE test
+        SET
+        test_state  = 4,
+        end_date  = #{endDate}
+        WHERE test_id=#{testId}
+    </update>
+
+    <select id="testManage" parameterType="Map" resultMap="Test">
+        select *
+        from test
+        where test_name LIKE concat('%',#{testName},'%')
+        and test_uname = #{testUname}
+            limit #{start},#{size}
+    </select>
+
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--@WeiJie,仪器资产管理-->
+<mapper namespace="com.example.demo.lims.mapper.ApparatusMapper">
+    <!--数据库表的字段与实体类的映射关系-->
+    <resultMap id="Apparatus" type="com.example.demo.lims.vo.Apparatus">
+        <id property="apparatusId" column="apparatus_id"/>
+        <result property="apparatusNum" column="apparatus_num"/>
+        <result property="apparatusSortId" column="apparatus_sort_id"/>
+        <result property="apparatusSortName" column="apparatus_sort_name"/>
+        <result property="apparatusBrand" column="apparatus_brand"/>
+        <result property="apparatusPrice" column="apparatus_price"/>
+        <result property="apparatusBuyTime" column="apparatus_buy_time"/>
+        <result property="apparatusRemark" column="apparatus_remark"/>
+        <result property="apparatusName" column="apparatus_name"/>
+    </resultMap>
+
+    <!--添加仪器资产-->
+    <insert id="insertApparatus" parameterType="Apparatus">
+        insert  into apparatus (apparatus_num,apparatus_sort_id,apparatus_sort_name,apparatus_brand,apparatus_price,apparatus_buy_time,apparatus_remark,apparatus_name)
+        values (#{apparatusNum},#{apparatusSortId},#{apparatusSortName},#{apparatusBrand},#{apparatusPrice},#{apparatusBuyTime},#{apparatusRemark},#{apparatusName})
+    </insert>
+
+    <!--删除仪器资产-->
+    <delete id="deleteApparatus" parameterType="Apparatus">
+        delete from apparatus
+        where apparatus_id= #{apparatusId}
+    </delete>
+
+    <!--修改仪器资产-->
+    <update id="updateApparatus" parameterType="Apparatus" >
+        UPDATE apparatus
+        SET
+        apparatus_sort_id  = #{apparatusSortId},
+        apparatus_sort_name  = #{apparatusSortName},
+        apparatus_brand  = #{apparatusBrand},
+        apparatus_price  = #{apparatusPrice},
+        apparatus_buy_time  = #{apparatusBuyTime},
+        apparatus_remark  = #{apparatusRemark},
+        apparatus_name  = #{apparatusName}
+        WHERE apparatus_id= #{apparatusId}
+    </update>
+
+    <!--查询单条仪器资产-->
+    <select id="selectApparatus" resultMap="Apparatus">
+        select * from apparatus
+        where apparatus_id= #{apparatusId}
+    </select>
+
+    <!--查询仪器资产列表-->
+    <select id="selectAllApparatus" resultMap="Apparatus">
+        select * from apparatus
+    </select>
+
+    <!--查询数据库表中仪器资产一共的条数-->
+    <select id="selectCount" resultType="int">
+        select count(*) from apparatus
+    </select>
+
+    <!--以分页的形式查询仪器资产列表-->
+    <select id="pageApparatus" parameterType="Map" resultMap="Apparatus">
+        select *
+        from apparatus
+        where apparatus_name LIKE concat('%',#{apparatusName},'%')
+        and apparatus_sort_name LIKE concat('%',#{apparatusSortName},'%')
+            limit #{start},#{size}
+    </select>
+
+</mapper>
